@@ -1,0 +1,33 @@
+{
+    "name": "stethome/ory-auth-bundle",
+    "description": "Symfony Authenticator for Ory Kratos",
+    "keywords": ["Symfony", "bundle", "Ory", "Kratos", "authentication"],
+    "type": "symfony-bundle",
+    "authors": [
+        {
+            "name": "StethoMe",
+            "homepage": "https://stethome.com/"
+        },
+        {
+            "name": "Filip Maciejewski",
+            "email": "maciejewski@stethome.com"
+        }
+    ],
+    "config": {
+        "sort-packages": true
+    },
+    "require": {
+        "php": ">=8.0",
+        "symfony/http-kernel": "^5.4|^6.3",
+        "symfony/security-bundle": "^5.4|^6.3"
+    },
+    "require-dev": {
+        "symfony/console": "^5.4|^6.3",
+        "symfony/phpunit-bridge": "^5.4|^6.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "StethoMe\\OryAuthBundle\\": "src/"
+        }
+    }
+}
