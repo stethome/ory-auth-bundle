@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="stethome.factory.ory_kratos_client" class="StethoMe\OryAuthBundle\Services\OryKratosClientFactory">
+            <argument type="service" id="stethome.ory_kratos_client.guzzle" on-invalid="null" />
+        </service>
+
+        <service id="stethome.service.ory_kratos_client" class="StethoMe\OryAuthBundle\Services\OryKratosClient" abstract="true">
+            <argument /> <!-- Public URL -->
+            <argument /> <!-- Internal URL -->
+            <argument /> <!-- Cookie Name -->
+            <argument on-invalid="null" /> <!-- Guzzle Client -->
+        </service>
+    </services>
+</container>

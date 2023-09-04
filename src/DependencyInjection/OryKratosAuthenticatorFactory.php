@@ -6,7 +6,9 @@ namespace StethoMe\OryAuthBundle\DependencyInjection;
 
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AuthenticatorFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 class OryKratosAuthenticatorFactory implements AuthenticatorFactoryInterface
 {
@@ -15,7 +17,7 @@ class OryKratosAuthenticatorFactory implements AuthenticatorFactoryInterface
         return 10;
     }
 
-    public function getKey()
+    public function getKey(): string
     {
         return 'ory_kratos';
     }
@@ -47,6 +49,25 @@ class OryKratosAuthenticatorFactory implements AuthenticatorFactoryInterface
 
     public function createAuthenticator(ContainerBuilder $container, string $firewallName, array $config, string $userProviderId)
     {
-        // TODO: Implement createAuthenticator() method.
+        $authenticatorId = 'security.authenticator.ory_kratos.'.$firewallName;
+        $clientId = 'stethome.service.ory_kratos_client.'.$firewallName;
+
+        $userProviderId = empty($config['provider']) ? $userProviderId : 'security.user.provider.concrete.'.$config['provider'];
+
+        $container
+            ->setDefinition($clientId, new ChildDefinition('stethome.service.ory_kratos_client'))
+            ->setFactory([new Reference('stethome.factory.ory_kratos_client'), 'create'])
+            ->replaceArgument(0, $config['public_url'])
+            ->replaceArgument(1, $config['browser_url'] ?? $config['public_url'])
+            ->replaceArgument(2, $config['session_cookie'])
+        ;
+
+        $container
+            ->setDefinition($authenticatorId, new ChildDefinition($config['authenticator']))
+            ->replaceArgument(0, new Reference($clientId))
+            ->replaceArgument(1, new Reference($userProviderId))
+        ;
+
+        return $authenticatorId;
     }
 }
