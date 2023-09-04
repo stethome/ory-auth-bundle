@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\ChainUserProvider;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -28,16 +29,20 @@ final class OryKratosAuthenticator extends AbstractAuthenticator implements Auth
 {
     use TargetPathTrait;
 
+    // TODO move to config
+    protected bool $checkSession = true;
+
     public function __construct(
         private readonly OryKratosClient $kratos,
         private readonly UserProviderInterface $userProvider,
+        private readonly Security $security,
         private readonly ?Stopwatch $stopwatch = null,
     ) {
     }
 
     public function supports(Request $request): ?bool
     {
-        return null;
+        return $this->security->getUser() ? $this->checkSession : null;
     }
 
     public function start(Request $request, AuthenticationException $authException = null): Response
@@ -55,6 +60,16 @@ final class OryKratosAuthenticator extends AbstractAuthenticator implements Auth
             }
 
             throw $exception;
+        }
+
+        // keep current user if we're only checking if the Ory Kratos session has not expired
+        if ($this->checkSession && $user = $this->security->getUser()) {
+            return new SelfValidatingPassport(
+                new UserBadge(
+                    $user->getUserIdentifier(),
+                    fn () => $user,
+                )
+            );
         }
 
         return new SelfValidatingPassport(

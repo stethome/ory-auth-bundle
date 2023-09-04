@@ -8,6 +8,7 @@
         <service id="stethome.security.ory_kratos_authenticator" class="StethoMe\OryAuthBundle\Security\Authenticator\OryKratosAuthenticator" abstract="true">
             <argument /> <!-- Ory Kratos Client -->
             <argument /> <!-- User Provider -->
+            <argument type="service" id="security.helper" on-invalid="exception" />
             <argument type="service" id="debug.stopwatch" on-invalid="null" />
         </service>
 
