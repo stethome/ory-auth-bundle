@@ -11,6 +11,5 @@
             <argument type="service" id="security.helper" on-invalid="exception" />
             <argument type="service" id="debug.stopwatch" on-invalid="null" />
         </service>
-
     </services>
 </container>

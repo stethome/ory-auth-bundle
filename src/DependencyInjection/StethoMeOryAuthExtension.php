@@ -22,5 +22,6 @@ class StethoMeOryAuthExtension extends Extension
 
         $loader->load('authenticator.xml');
         $loader->load('client.xml');
+        $loader->load('event.xml');
     }
 }

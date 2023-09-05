@@ -6,6 +6,7 @@ namespace StethoMe\OryAuthBundle\Services;
 
 use Ory\Kratos\Client\ApiException;
 use Ory\Kratos\Client\Configuration;
+use Ory\Kratos\Client\Model\LogoutFlow;
 use Ory\Kratos\Client\Model\Session;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,6 +44,14 @@ class OryKratosClient implements OryKratosClientInterface
         $returnPath = $request->getUri();
 
         return new RedirectResponse("{$this->kratosBrowserUrl}/{$loginPath}?{$returnParam}={$returnPath}");
+    }
+
+    /**
+     * @throws ApiException
+     */
+    public function createLogoutFlow(Request $request): LogoutFlow
+    {
+        return $this->frontendApi->createBrowserLogoutFlow($this->getSessionCookie($request));
     }
 
     protected function getSessionCookie(Request $request): string

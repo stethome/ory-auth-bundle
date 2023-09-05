@@ -47,9 +47,10 @@ class OryKratosAuthenticatorFactory implements AuthenticatorFactoryInterface
         ;
     }
 
-    public function createAuthenticator(ContainerBuilder $container, string $firewallName, array $config, string $userProviderId)
+    public function createAuthenticator(ContainerBuilder $container, string $firewallName, array $config, string $userProviderId): string
     {
         $authenticatorId = 'security.authenticator.ory_kratos.'.$firewallName;
+        $logoutListenerId = 'security.logout_listener.ory_kratos.'.$firewallName;
         $clientId = 'stethome.service.ory_kratos_client.'.$firewallName;
 
         $userProviderId = empty($config['provider']) ? $userProviderId : 'security.user.provider.concrete.'.$config['provider'];
@@ -61,6 +62,15 @@ class OryKratosAuthenticatorFactory implements AuthenticatorFactoryInterface
             ->replaceArgument(1, $config['browser_url'] ?? $config['public_url'])
             ->replaceArgument(2, $config['session_cookie'])
         ;
+
+        // has logout
+        if ($container->has('security.logout_listener.'.$firewallName)) {
+            $container
+                ->setDefinition($logoutListenerId, new ChildDefinition('stethome.logout_listener.ory_kratos'))
+                ->replaceArgument(0, new Reference($clientId))
+                ->addTag('kernel.event_listener')
+            ;
+        }
 
         $container
             ->setDefinition($authenticatorId, new ChildDefinition($config['authenticator']))
