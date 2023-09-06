@@ -1,5 +1,6 @@
 {
     "name": "stethome/ory-auth-bundle",
+    "license": "MIT",
     "description": "Symfony Authenticator for Ory Kratos",
     "keywords": ["Symfony", "bundle", "Ory", "Kratos", "authentication"],
     "type": "symfony-bundle",
