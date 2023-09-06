@@ -27,8 +27,6 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 final class OryKratosAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface
 {
-    use TargetPathTrait;
-
     // TODO move to config
     protected bool $checkSession = true;
 
@@ -84,10 +82,6 @@ final class OryKratosAuthenticator extends AbstractAuthenticator implements Auth
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        if ($request->hasSession() && $request->isMethodSafe() && !$request->isXmlHttpRequest()) {
-            $this->removeTargetPath($request->getSession(), $firewallName);
-        }
-
         return null;
     }
 
