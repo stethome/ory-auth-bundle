@@ -22,7 +22,6 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
-use Symfony\Component\Security\Http\Util\TargetPathTrait;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 final class OryKratosAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface
@@ -48,9 +47,13 @@ final class OryKratosAuthenticator extends AbstractAuthenticator implements Auth
         return $this->kratos->getLoginResponse($request);
     }
 
+    /**
+     * @throws ApiException
+     */
     public function authenticate(Request $request): Passport
     {
         try {
+            $this->stopwatch?->start('ory_kratos_session');
             $session = $this->kratos->getRequestSession($request);
         } catch (ApiException $exception) {
             if (Response::HTTP_UNAUTHORIZED === $exception->getCode()) {
@@ -58,6 +61,8 @@ final class OryKratosAuthenticator extends AbstractAuthenticator implements Auth
             }
 
             throw $exception;
+        } finally {
+            $this->stopwatch?->stop('ory_kratos_session');
         }
 
         // keep current user if we're only checking if the Ory Kratos session has not expired
