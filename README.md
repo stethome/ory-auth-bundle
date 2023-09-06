@@ -7,7 +7,7 @@ This bundle provides Symfony Authenticator for [Ory Kratos](https://www.ory.sh/k
 # Installation
 
 ```
-composer require stehome/ory-auth-bundle
+composer require stethome/ory-auth-bundle
 ```
 
 If your project does not use Symfony Flex you need to manually register the bundle in `config/bundles.php`:
