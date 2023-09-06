@@ -52,6 +52,7 @@ class OryKratosClient implements OryKratosClientInterface
     public function createLogoutFlow(Request $request): LogoutFlow
     {
         $returnTo = $request->getUriForPath('/');
+
         return $this->frontendApi->createBrowserLogoutFlow($this->getSessionCookie($request), $returnTo);
     }
 
