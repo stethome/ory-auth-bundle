@@ -36,6 +36,7 @@ class OryKratosAuthenticatorFactory implements AuthenticatorFactoryInterface
                 ->scalarNode('session_cookie')
                     ->info('Name of the cookie holding Ory Kratos session')
                     ->defaultValue('ory_kratos_session')
+                ->end()
                 ->booleanNode('session_check')
                     ->info('Should the session cookie be checked on every request. Disabling this will allow the user to stay logged in your application even after he logged out of kratos, use with caution!')
                     ->defaultValue(true)
