@@ -36,6 +36,9 @@ class OryKratosAuthenticatorFactory implements AuthenticatorFactoryInterface
                 ->scalarNode('session_cookie')
                     ->info('Name of the cookie holding Ory Kratos session')
                     ->defaultValue('ory_kratos_session')
+                ->booleanNode('session_check')
+                    ->info('Should the session cookie be checked on every request. Disabling this will allow the user to stay logged in your application even after he logged out of kratos, use with caution!')
+                    ->defaultValue(true)
                 ->end()
                 ->scalarNode('provider')
                     ->defaultNull()
@@ -76,6 +79,7 @@ class OryKratosAuthenticatorFactory implements AuthenticatorFactoryInterface
             ->setDefinition($authenticatorId, new ChildDefinition($config['authenticator']))
             ->replaceArgument(0, new Reference($clientId))
             ->replaceArgument(1, new Reference($userProviderId))
+            ->replaceArgument(3, $config['session_check'])
         ;
 
         return $authenticatorId;

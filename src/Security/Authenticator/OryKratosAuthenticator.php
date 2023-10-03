@@ -26,13 +26,11 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 final class OryKratosAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface
 {
-    // TODO move to config
-    protected bool $checkSession = true;
-
     public function __construct(
         private readonly OryKratosClient $kratos,
         private readonly UserProviderInterface $userProvider,
         private readonly Security $security,
+        private readonly bool $checkSession = true,
         private readonly ?Stopwatch $stopwatch = null,
     ) {
     }

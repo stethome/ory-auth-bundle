@@ -9,6 +9,7 @@
             <argument /> <!-- Ory Kratos Client -->
             <argument /> <!-- User Provider -->
             <argument type="service" id="security.helper" on-invalid="exception" />
+            <argument /> <!-- Check session -->
             <argument type="service" id="debug.stopwatch" on-invalid="null" />
         </service>
     </services>
