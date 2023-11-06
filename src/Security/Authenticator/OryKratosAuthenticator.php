@@ -65,6 +65,11 @@ final class OryKratosAuthenticator extends AbstractAuthenticator implements Auth
 
         // keep current user if we're only checking if the Ory Kratos session has not expired
         if ($this->checkSession && $user = $this->security->getUser()) {
+            // handle user switching accounts outside our application
+            if ($this->loadUser($session->getIdentity()->getId(), $session)->getUserIdentifier() !== $user->getUserIdentifier()) {
+                throw new AuthenticationException('Session user not equal application user!');
+            }
+
             return new SelfValidatingPassport(
                 new UserBadge(
                     $user->getUserIdentifier(),
