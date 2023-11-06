@@ -80,7 +80,7 @@ class OryKratosAuthenticatorFactory implements AuthenticatorFactoryInterface
             ->setDefinition($authenticatorId, new ChildDefinition($config['authenticator']))
             ->replaceArgument(0, new Reference($clientId))
             ->replaceArgument(1, new Reference($userProviderId))
-            ->replaceArgument(3, $config['session_check'])
+            ->replaceArgument(4, $config['session_check'])
         ;
 
         return $authenticatorId;

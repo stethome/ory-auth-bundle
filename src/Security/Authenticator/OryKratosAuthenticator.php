@@ -10,11 +10,13 @@ use StethoMe\OryAuthBundle\Security\UserProvider\OryKratosUserProviderInterface;
 use StethoMe\OryAuthBundle\Services\OryKratosClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\ChainUserProvider;
+use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
@@ -30,6 +32,7 @@ final class OryKratosAuthenticator extends AbstractAuthenticator implements Auth
         private readonly OryKratosClient $kratos,
         private readonly UserProviderInterface $userProvider,
         private readonly Security $security,
+        private readonly TokenStorageInterface $tokenStorage,
         private readonly bool $checkSession = true,
         private readonly ?Stopwatch $stopwatch = null,
     ) {
@@ -66,8 +69,10 @@ final class OryKratosAuthenticator extends AbstractAuthenticator implements Auth
         // keep current user if we're only checking if the Ory Kratos session has not expired
         if ($this->checkSession && $user = $this->security->getUser()) {
             // handle user switching accounts outside our application
-            if ($this->loadUser($session->getIdentity()->getId(), $session)->getUserIdentifier() !== $user->getUserIdentifier()) {
-                throw new AuthenticationException('Session user not equal application user!');
+            $newUser = $this->loadUser($session->getIdentity()->getId(), $session);
+            if ($newUser instanceof EquatableInterface && !$newUser->isEqualTo($user)) {
+                $this->tokenStorage->setToken(null);
+                throw new UserNotFoundException('Session user not equal application user!');
             }
 
             return new SelfValidatingPassport(
