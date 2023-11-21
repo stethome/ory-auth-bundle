@@ -11,6 +11,7 @@ use StethoMe\OryAuthBundle\Services\OryKratosClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
@@ -40,6 +41,12 @@ final class OryKratosAuthenticator extends AbstractAuthenticator implements Auth
 
     public function supports(Request $request): ?bool
     {
+        // TODO this needs more robust handling
+        $token = $this->security->getToken();
+        if ($token instanceof SwitchUserToken) {
+            return false;
+        }
+
         return $this->security->getUser() ? $this->checkSession : null;
     }
 
