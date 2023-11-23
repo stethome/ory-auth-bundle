@@ -7,7 +7,6 @@ namespace StethoMe\OryAuthBundle\Tests\DependencyInjection;
 use PHPUnit\Framework\TestCase;
 use StethoMe\OryAuthBundle\DependencyInjection\OryKratosAuthenticatorFactory;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;

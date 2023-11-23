@@ -1,0 +1,54 @@
+name: PHPUnit
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        php:
+          - '8.1'
+          - '8.2'
+        symfony:
+          - '5.4.*'
+          - '6.4.*@dev'
+          - '7.0.*@dev'
+        exclude:
+          - php: '8.1'
+            symfony: '7.0.*@dev' # requires PHP ^8.2.0
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      SYMFONY: ${{ matrix.symfony }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          ini-values: date.timezone='UTC'
+          tools: composer:v2
+
+      - name: Set Composer stability
+        if: ${{ matrix.symfony == '6.4.*@dev' || matrix.symfony == '7.0.*@dev' }}
+        run: composer config minimum-stability dev
+
+      - name: Require symfony
+        run: composer --no-update require symfony/symfony:"${SYMFONY}"
+
+      - name: Install dependencies
+        run: |
+          composer update
+          vendor/bin/simple-phpunit install
+
+      - name: Test
+        run: |
+          composer validate --strict --no-check-lock
+          vendor/bin/simple-phpunit --coverage-text --verbose
