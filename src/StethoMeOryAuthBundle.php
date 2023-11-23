@@ -17,10 +17,6 @@ class StethoMeOryAuthBundle extends Bundle
 
         /** @var SecurityExtension $extension */
         $extension = $container->getExtension('security');
-
-        // Authenticator factory for Symfony 5.4 and later
-        if (method_exists($extension, 'addAuthenticatorFactory')) {
-            $extension->addAuthenticatorFactory(new OryKratosAuthenticatorFactory());
-        }
+        $extension->addAuthenticatorFactory(new OryKratosAuthenticatorFactory());
     }
 }
