@@ -17,6 +17,9 @@
     "config": {
         "sort-packages": true
     },
+    "scripts": {
+        "phpunit": "vendor/bin/simple-phpunit --testdox"
+    },
     "require": {
         "php": ">=8.1",
         "ory/kratos-client-php": "^1.0",
@@ -32,5 +35,11 @@
         "psr-4": {
             "StethoMe\\OryAuthBundle\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "StethoMe\\OryAuthBundle\\Tests\\": "tests"
+        }
     }
+
 }
